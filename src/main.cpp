@@ -107,7 +107,7 @@ int main(){
         DrawGrid(40,5.0f);
         EndMode3D();
         DrawRectangleGradientV(0,0,GetScreenWidth(),110,Color{7,13,23,245},Color{7,13,23,0});
-        DrawText("BALVOX",28,20, thirty=30,Color{235,242,247,255});
+        DrawText("BALVOX",28,20,30,Color{235,242,247,255});
         DrawText("MISSILE SANDBOX  /  RANGE 01",30,56,14,Color{117,174,190,255});
         DrawText("SIMULATION  ONLINE",GetScreenWidth()-245,30,15,GREEN);
         DrawCircle(GetScreenWidth()-263,38,4,GREEN);
