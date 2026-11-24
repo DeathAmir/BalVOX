@@ -39,9 +39,14 @@ set_target_properties(BalVOX PROPERTIES
 )
 
 add_custom_command(TARGET BalVOX POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        "$<TARGET_FILE_DIR:BalVOX>/Content/terrain"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${wickedengine_SOURCE_DIR}/Content"
-        "$<TARGET_FILE_DIR:BalVOX>/Content"
+        "${wickedengine_SOURCE_DIR}/Content/terrain"
+        "$<TARGET_FILE_DIR:BalVOX>/Content/terrain"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${wickedengine_SOURCE_DIR}/WickedEngine/shaders"
+        "$<TARGET_FILE_DIR:BalVOX>/shaders"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${wickedengine_SOURCE_DIR}/WickedEngine/dxcompiler.dll"
         "$<TARGET_FILE_DIR:BalVOX>/dxcompiler.dll"
