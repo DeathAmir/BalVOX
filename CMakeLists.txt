@@ -38,8 +38,6 @@ set_target_properties(BalVOX PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
-add_dependencies(BalVOX Content)
-
 add_custom_command(TARGET BalVOX POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${wickedengine_SOURCE_DIR}/Content"
