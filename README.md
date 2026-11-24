@@ -26,3 +26,6 @@ This is an entertainment-only game simulation. Its motion model and controls are
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 ```
+
+
+Build status is published by the Windows x64 GitHub Actions workflow.
