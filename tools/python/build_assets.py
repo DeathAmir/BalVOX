@@ -9,7 +9,7 @@ profile = {
     "project": "BalVOX Realistic Simulator",
     "version": "0.2.0",
     "engine": "Godot 4.4",
-    "rendering": "Forward+ compatible / GL Compatibility fallback",
+    "rendering": "Godot Forward+ Vulkan renderer",
     "presets": {
         "low": {"ssao": False, "ssr": False, "volumetric_fog": False},
         "medium": {"ssao": True, "ssr": False, "volumetric_fog": False},
