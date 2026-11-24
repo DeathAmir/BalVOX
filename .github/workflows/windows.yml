@@ -31,8 +31,8 @@ jobs:
       - name: Validate Godot project
         shell: pwsh
         run: |
-          $godot = Get-ChildItem -Filter "Godot_v4.4.1-stable_win64.exe" | Select-Object -First 1
-          if (-not $godot) { throw "Godot runtime executable missing" }
+          $godot = Get-ChildItem -Path $env:GODOT_EXE -ErrorAction SilentlyContinue
+          if (-not $godot) { throw "Godot runtime executable missing: $env:GODOT_EXE" }
           & $godot.FullName --headless --path . --editor --quit
           if ($LASTEXITCODE -ne 0) { throw "Godot project validation failed" }
 
