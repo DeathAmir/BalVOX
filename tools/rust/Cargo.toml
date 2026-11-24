@@ -3,6 +3,9 @@ name = "balvox-telemetry"
 version = "0.2.0"
 edition = "2021"
 
+[dependencies]
+serde_json = "1"
+
 [profile.release]
 lto = true
 codegen-units = 1
