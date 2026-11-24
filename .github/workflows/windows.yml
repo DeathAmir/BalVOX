@@ -1,7 +1,7 @@
-name: Windows x64 Build
+name: BalVOX Windows x64
 on:
   push:
-    branches: [main]
+    branches: [godot-realistic]
     tags: ["v*"]
   workflow_dispatch:
 permissions:
@@ -11,29 +11,64 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install build tools
+        uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
-      - name: Configure
-        run: cmake -S . -B build -A x64 -DCMAKE_BUILD_TYPE=Release
-      - name: Build
-        run: cmake --build build --config Release --parallel
-      - name: Package
+
+      - name: Download Godot runtime
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force dist/shaders | Out-Null
-          Copy-Item build/Release/BalVOX.exe dist/
-          Copy-Item README.md dist/
-          Copy-Item shaders/ground.fs dist/shaders/
+          Invoke-WebRequest "https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_win64.exe.zip" -OutFile godot.zip
+          Expand-Archive godot.zip -DestinationPath godot-runtime
+          $exe = Get-ChildItem godot-runtime -Filter *.exe | Select-Object -First 1
+          if (-not $exe) { throw "Godot runtime was not found in archive" }
+          Copy-Item $exe.FullName Godot.exe
+
+      - name: Validate Godot project
+        shell: pwsh
+        run: |
+          ./Godot.exe --headless --path . --editor --quit
+          if ($LASTEXITCODE -ne 0) { throw "Godot project validation failed" }
+
+      - name: Build native C++ library
+        run: |
+          cmake -S native -B build/native -A x64 -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/native --config Release
+
+      - name: Build Rust telemetry tool
+        working-directory: tools/rust
+        run: cargo build --release
+
+      - name: Build C# configurator
+        run: dotnet publish tools/configurator/BalVOX.Configurator.csproj -c Release -r win-x64 --self-contained false -o build/configurator
+
+      - name: Generate Python profiles
+        run: python tools/python/build_assets.py
+
+      - name: Package self-contained game
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist/Tools, dist/Configurator, dist/generated | Out-Null
+          Copy-Item Godot.exe dist/
+          Copy-Item project.godot, README.md dist/
+          Copy-Item scenes, scripts dist/ -Recurse
+          Copy-Item Start-BalVOX.bat dist/
+          Copy-Item build/native/Release/balvox_native.dll dist/Configurator/
+          Copy-Item build/configurator/* dist/Configurator/ -Recurse
+          Copy-Item tools/rust/target/release/balvox-telemetry.exe dist/Tools/
+          Copy-Item generated/quality_profiles.json dist/generated/
           Compress-Archive -Path dist/* -DestinationPath BalVOX-Windows-x64.zip -Force
+
       - uses: actions/upload-artifact@v4
         with:
           name: BalVOX-Windows-x64
           path: BalVOX-Windows-x64.zip
+
       - name: Publish GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.1.0
           files: BalVOX-Windows-x64.zip
           generate_release_notes: true
