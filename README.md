@@ -1,31 +1,44 @@
-# BalVOX: Missile Sandbox
+# BalVOX Realistic Simulator
 
-A small 3D arcade-style sandbox for testing fictional launchers, trajectories, target interactions and stylized impact effects.
+A Windows x64 3D test-range sandbox built with Godot 4.4.1. The project no longer uses Raylib. The Windows package includes the Godot runtime, so the user does not need to install a game engine.
 
-## Features
-- C++17 and raylib 5.5
-- 3D test range, launcher platform and target props
-- Game-oriented projectile motion and gravity
-- Procedural impact particles
-- Animated ground shader and compact telemetry HUD
-- Windows x64 build through GitHub Actions
+## Technology
+
+- Godot 4.4.1: 3D scene, camera, gameplay, particles, input and physics.
+- GDScript: simulator runtime and quality presets.
+- C++17: native calculation library used by the desktop configurator.
+- C# / .NET 8: Windows graphics and simulation settings utility.
+- Python 3: build-time generation of quality profile metadata.
+- Rust: settings/telemetry validation utility.
+- Godot Shader Language: material and rendering pipeline.
+
+## Windows x64
+
+Download the Windows x64 package from GitHub Releases, extract it, and run `Start-BalVOX.bat`. No Godot installation is required.
+
+The C# configurator is in `Configurator`. The Rust validator and generated graphics profiles are in `Tools`.
 
 ## Controls
-- A / D: rotate launcher
-- W / S: adjust elevation
-- Q / E: adjust arcade power
-- Left mouse: launch
-- R: reset targets and projectiles
-- H: show/hide help
-- Tab: pause
 
-This is an entertainment-only game simulation. Its motion model and controls are intentionally fictional and are not intended to model or optimize real-world weapons.
+- WASD: move camera
+- Mouse: look around
+- Space: launch a fictional test projectile
+- Q / E: adjust test angle
+- +/-: adjust simulation power
+- Mouse wheel: adjust camera movement speed
+- F1: toggle help
+- F2: cycle Low / Medium / High / Ultra
+- F3: settings panel
+- R: reset range
+- Tab: pause
+- Esc: release/capture mouse
+
+## Graphics
+
+Four quality presets are provided. Low disables expensive screen-space effects; Medium enables ambient occlusion; High and Ultra enable additional reflections, volumetric fog and stronger post-processing. The Compatibility renderer is selected to support a wider range of Windows GPUs, including older hardware such as the Radeon RX 580.
 
 ## Build
-```sh
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --config Release
-```
 
+The GitHub Actions workflow downloads the official Godot 4.4.1 Windows runtime, validates the project headlessly, builds the C++ library, Rust utility and C# configurator, then packages everything into a self-contained Windows x64 ZIP.
 
-Build status is published by the Windows x64 GitHub Actions workflow.
+This is an entertainment-focused fictional sandbox. Its test projectiles and physics are game simulation, not a real-world engineering or weapons-design tool.
