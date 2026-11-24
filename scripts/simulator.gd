@@ -262,8 +262,6 @@ func _build_hud() -> void:
     quality_select.item_selected.connect(func(index: int):
         quality = index
         _apply_quality()
-        if quality_select:
-            quality_select.select(quality)
     )
     settings.add_child(quality_select)
     var speed_title := Label.new()
@@ -456,3 +454,5 @@ func _load_settings() -> void:
         move_speed = clampf(float(parsed.get("speed", 16)), 5, 34)
         launch_power = clampf(float(parsed.get("power", 0.72)), 0.2, 1.0)
         _apply_quality()
+        if quality_select:
+            quality_select.select(quality)
