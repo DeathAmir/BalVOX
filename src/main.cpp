@@ -78,7 +78,7 @@ int main(){
         BeginMode3D(camera);
         SetShaderValue(ground,timeLoc,&elapsed,SHADER_UNIFORM_FLOAT);
         BeginShaderMode(ground);
-        DrawPlane(V(0,-0.08f,-25),V(240,180),WHITE);
+        DrawPlane(V(0,-0.08f,-25),Vector2{240,180},WHITE);
         EndShaderMode();
         for(int x=-100;x<=100;x+=10) DrawLine3D(V((float)x,0.015f,-110),V((float)x,0.015f,55),Color{53,77,91,100});
         for(int z=-110;z<=55;z+=10) DrawLine3D(V(-100,0.015f,(float)z),V(100,0.015f,(float)z),Color{53,77,91,100});
