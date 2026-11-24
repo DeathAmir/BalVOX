@@ -35,7 +35,7 @@ The C# configurator is in `Configurator`. The Rust validator and generated graph
 
 ## Graphics
 
-Four quality presets are provided. Low disables expensive screen-space effects; Medium enables ambient occlusion; High and Ultra enable additional reflections, volumetric fog and stronger post-processing. The Compatibility renderer is selected to support a wider range of Windows GPUs, including older hardware such as the Radeon RX 580.
+Four quality presets are provided. Low disables expensive screen-space effects; Medium enables ambient occlusion; High and Ultra enable additional reflections, volumetric fog and stronger post-processing. The Forward+ renderer is enabled for dynamic lighting, ambient occlusion, screen-space reflections and volumetric fog. The RX 580 is the target baseline; Low and Medium presets reduce expensive effects. If a GPU driver cannot initialize Vulkan, a future compatibility build can be added.
 
 ## Build
 
