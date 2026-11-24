@@ -1,4 +1,4 @@
-# Wicked Engine release pinned to v0.72.139 for reproducible Windows builds.
+# Wicked Engine release pinned to v0.72.139 for reproducible Windows builds. Runtime assets are copied from the pinned source checkout.
 name: BalVOX Windows x64
 
 on:
