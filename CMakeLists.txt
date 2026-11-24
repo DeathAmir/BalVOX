@@ -42,7 +42,7 @@ add_dependencies(BalVOX Content)
 
 add_custom_command(TARGET BalVOX POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_BINARY_DIR}/Content"
+        "${wickedengine_SOURCE_DIR}/Content"
         "$<TARGET_FILE_DIR:BalVOX>/Content"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${wickedengine_SOURCE_DIR}/WickedEngine/dxcompiler.dll"
