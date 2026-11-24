@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+project(BalVOXNative LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_library(balvox_native SHARED physics.cpp)
+if(WIN32)
+  set_target_properties(balvox_native PROPERTIES PREFIX "" OUTPUT_NAME "balvox_native")
+endif()
