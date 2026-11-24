@@ -22,6 +22,7 @@ var hud: CanvasLayer
 var status_label: Label
 var telemetry_label: Label
 var settings_panel: PanelContainer
+var quality_select: OptionButton
 var rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
@@ -109,8 +110,9 @@ func _build_range() -> void:
     plane.subdivide_depth = 120
     terrain.mesh = plane
     terrain.position = Vector3(0, -0.65, -80)
-    var ground_mat := _mat(Color(0.25, 0.29, 0.24), 0.96)
-    ground_mat.uv1_scale = Vector3(42, 42, 1)
+    var terrain_shader := load("res://shaders/terrain.gdshader") as Shader
+    var ground_mat := ShaderMaterial.new()
+    ground_mat.shader = terrain_shader
     terrain.material_override = ground_mat
     add_child(terrain)
     var concrete := _mat(Color(0.34, 0.37, 0.37), 0.88)
@@ -248,10 +250,54 @@ func _build_hud() -> void:
     title.text = "SIMULATION SETTINGS"
     title.add_theme_font_size_override("font_size", 17)
     settings.add_child(title)
-    for item in ["F1  Toggle help", "F2  Cycle quality preset", "F3  Toggle settings panel", "R  Reset test range", "Mouse wheel  Camera distance"]:
-        var label := Label.new()
-        label.text = item
-        settings.add_child(label)
+    var quality_title := Label.new()
+    quality_title.text = "Graphics quality"
+    settings.add_child(quality_title)
+    quality_select = OptionButton.new()
+    quality_select.add_item("Low")
+    quality_select.add_item("Medium")
+    quality_select.add_item("High")
+    quality_select.add_item("Ultra")
+    quality_select.selected = quality
+    quality_select.item_selected.connect(func(index: int):
+        quality = index
+        _apply_quality()
+        if quality_select:
+            quality_select.select(quality)
+    )
+    settings.add_child(quality_select)
+    var speed_title := Label.new()
+    speed_title.text = "Camera movement speed"
+    settings.add_child(speed_title)
+    var speed_slider := HSlider.new()
+    speed_slider.min_value = 5
+    speed_slider.max_value = 34
+    speed_slider.value = move_speed
+    speed_slider.value_changed.connect(func(value: float):
+        move_speed = value
+        _save_settings()
+    )
+    settings.add_child(speed_slider)
+    var power_title := Label.new()
+    power_title.text = "Test power"
+    settings.add_child(power_title)
+    var power_slider := HSlider.new()
+    power_slider.min_value = 0.2
+    power_slider.max_value = 1.0
+    power_slider.step = 0.01
+    power_slider.value = launch_power
+    power_slider.value_changed.connect(func(value: float):
+        launch_power = value
+        _save_settings()
+    )
+    settings.add_child(power_slider)
+    var fullscreen := CheckButton.new()
+    fullscreen.text = "Fullscreen"
+    fullscreen.button_pressed = false
+    fullscreen.toggled.connect(func(enabled: bool):
+        DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if enabled else DisplayServer.WINDOW_MODE_WINDOWED)
+    )
+    settings.add_child(fullscreen)
 
 func _unhandled_input(event: InputEvent) -> void:
     if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and not paused:
@@ -275,6 +321,8 @@ func _unhandled_input(event: InputEvent) -> void:
                 hud.get_node("Control/Help").visible = help_visible
             KEY_F2:
                 quality = (quality + 1) % 4
+                if quality_select:
+                    quality_select.select(quality)
                 _apply_quality()
             KEY_F3:
                 settings_panel.visible = not settings_panel.visible
