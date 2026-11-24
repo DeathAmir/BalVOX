@@ -1,4 +1,4 @@
-# Wicked Engine release pinned to v0.72.139 for reproducible Windows builds. Only the required terrain scene and runtime shader sources are packaged to keep the ZIP lean.
+# Wicked Engine release pinned to v0.72.139 for reproducible Windows builds. Only the terrain scene and renderer shader sources are staged for the runtime ZIP.
 name: BalVOX Windows x64
 
 on:
