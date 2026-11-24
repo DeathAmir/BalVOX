@@ -42,7 +42,7 @@ jobs:
         run: cargo build --release
 
       - name: Build C# configurator
-        run: dotnet publish tools/configurator/BalVOX.Configurator.csproj -c Release -r win-x64 --self-contained false -o build/configurator
+        run: dotnet publish tools/configurator/BalVOX.Configurator.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o build/configurator
 
       - name: Generate Python profiles
         run: python tools/python/build_assets.py
@@ -53,7 +53,7 @@ jobs:
           New-Item -ItemType Directory -Force dist/Tools, dist/Configurator, dist/generated | Out-Null
           Copy-Item Godot.exe dist/
           Copy-Item project.godot, README.md dist/
-          Copy-Item scenes, scripts dist/ -Recurse
+          Copy-Item scenes, scripts, shaders dist/ -Recurse
           Copy-Item Start-BalVOX.bat dist/
           Copy-Item build/native/Release/balvox_native.dll dist/Configurator/
           Copy-Item build/configurator/* dist/Configurator/ -Recurse
