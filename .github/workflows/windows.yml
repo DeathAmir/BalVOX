@@ -24,12 +24,16 @@ jobs:
           Expand-Archive godot.zip -DestinationPath godot-runtime
           $exe = Get-ChildItem godot-runtime -Filter *.exe | Select-Object -First 1
           if (-not $exe) { throw "Godot runtime was not found in archive" }
-          Copy-Item $exe.FullName Godot.exe
+          $godotName = $exe.Name
+          Copy-Item $exe.FullName $godotName
+          "GODOT_EXE=$godotName" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Validate Godot project
         shell: pwsh
         run: |
-          ./Godot.exe --headless --path . --editor --quit
+          $godot = Get-ChildItem -Filter "Godot_v4.4.1-stable_win64.exe" | Select-Object -First 1
+          if (-not $godot) { throw "Godot runtime executable missing" }
+          & $godot.FullName --headless --path . --editor --quit
           if ($LASTEXITCODE -ne 0) { throw "Godot project validation failed" }
 
       - name: Build native C++ library
@@ -51,7 +55,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist/Tools, dist/Configurator, dist/generated | Out-Null
-          Copy-Item Godot.exe dist/
+          Copy-Item $env:GODOT_EXE dist/
           Copy-Item project.godot, README.md dist/
           Copy-Item scenes, scripts, shaders dist/ -Recurse
           Copy-Item Start-BalVOX.bat dist/
