@@ -37,7 +37,7 @@ internal static class Program
         private void SaveSettings()
         {
             var data = new { quality = quality.SelectedIndex, speed = (double)speed.Value, power = (double)power.Value / 100.0 };
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "BalVOX", "settings.json");
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Godot", "app_userdata", "BalVOX Realistic Simulator", "balvox_settings.json");
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             File.WriteAllText(path, JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true }));
             double drag;
